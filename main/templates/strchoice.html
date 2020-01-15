@@ -1,0 +1,23 @@
+﻿<!DOCTYPE.html>
+<html>
+<body>
+{% extends "layout.html" %}
+{% block content %}
+    <div class="register">
+        <FORM action="{{ url_for('register') }} " method="POST">
+
+            USERNAME:<input type="text" name="username"></br>
+            PASSWORD:<input type="text" name="password"></br>
+
+            EMAIL:<input type="text" name="email"></br>
+            <input type="submit" value="Submit">
+        </FORM>
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+    {% endif %}
+    </div>
+
+{% endblock %}
+</body>
+</html>
+

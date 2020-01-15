@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "dropdown.html" %}
+{% block content %}
+		<div class="admin">
+            <h1>ADMIN</h1>
+            <input type="submit" value="VIEW BOOKS"  href="{{ url_for('books') }}">
+    	    <input type="submit" value="VIEW MOVIES"  href="{{ url_for('movies') }}">
+            <input type="submit" value="VIEW MUSIC" href="{{ url_for('music') }}">
+		
+            
+            
+	     </div>
+{% endblock %}
+	</body>
+</html>

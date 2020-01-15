@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "dropdown.html" %}
+{% block content %}
+<div>
+    
+<table>
+    <thead>
+    <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Musician/Band</th>
+    	<th>Album</th>
+        <th>Year</th>
+        <th>Description</th>
+        
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in value %} 
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+        		<td>{{row[5]}}</td>
+        
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+<div class="music">
+			<h1>MUSIC</h1>
+			<form action="{{ url_for('music') }}" method="POST">
+				<input type="text" name="name" placeholder="Name" id="name" required>
+				<input type="text" name="musicianband" placeholder="Musician/Band" id="musicianband" required>
+				<input type="text" name="album" placeholder="Album" id="album" required>				
+				<input type="text" name="year" placeholder="Year" id="year" required>
+				<input type="text" name="description" placeholder="Description" id="description" required>
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+{% endblock %}
+	</body>
+</html>

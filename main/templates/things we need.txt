@@ -1,0 +1,11 @@
+
+ALL BUTTONS:::                                                     
+IMAGES::::
+SEARCH:
+   - BASIC SEARCH------name
+   - ADVANCED SEARCH----name, genre, creator, year
+USER SETTINGS - CHANGE THE PASSWORD,USERNAME,EMAIL
+FEES - 
+USER HISTORY
+ADMIN ::::::
+COMMENTS????????????????????????????
