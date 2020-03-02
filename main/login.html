@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "dropdown.html" %}
+{% block content %}
+		<div class="login">
+            <h1>LOGIN/</h1>
+            Are you user or admin??
+            <a href= "{{ url_for('userlogin') }} ">User</a>
+            <a href= "{{ url_for('adminlogin') }}" >Admin</a>
+            
+            
+            
+	     </div>
+{% endblock %}
+	</body>
+</html>
+

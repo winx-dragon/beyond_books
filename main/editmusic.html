@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+
+
+{% for row in value %}
+		<form action="{{ url_for('editmusic', id=row[0]) }}" method="POST">
+			
+			<fieldset>
+                	<legend>Edit:</legend>
+                	
+                <label for="fname">Name:</label><br>
+                <input type="text" id="name" name="name"  value="{{row[1]}}"><br><br>
+                
+                <label for="author">Musician/Band:</label><br>
+                <input type="text" id="musicianband" name="musicianband"  value="{{row[2]}}"><br><br>
+               
+                <label for="publisher">Album:</label><br>
+                <input type="text" id="album" name="album" value="{{row[3]}}"><br><br>
+               
+                <label for="year">Year:</label><br>
+                <input type="text" id="year" name="year" value="{{row[4]}}"><br><br>
+                
+                <label for="genre">Genre:</label><br>
+                <input type="text" id="genre" name="genre" value="{{row[5]}}"><br><br>
+                
+                <label for="description">Description:</label><br>
+                <input type="text" id="description" name="description"  value="{{row[6]}}"><br><br>
+                
+                <label for="quantity">Quantity:</label><br>
+                <input type="text" id="quantity" name="quantity" value="{{row[7]}}"><br><br>
+                
+                
+                
+                
+                <input type="submit" value="Submit">
+            </fieldset>
+            <div class="msg">{{ msg }}</div>
+</form>
+{% endfor %}
+	</body>
+</html>
+{% endblock %}

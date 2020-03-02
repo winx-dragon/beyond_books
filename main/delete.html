@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+<style> 
+        table, th, td { 
+            border: 1px solid black; 
+            border-collapse: collapse; 
+        } 
+          
+        th, td { 
+            padding: 5px; 
+            text-align: left; 
+        } 
+          
+    </style> 
+
+
+
+<table style="width:100%"> 
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Year</th>
+        <th>Description</th>
+        
+        
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in value %} 
+            <tr>
+                <td>{{row[5]}}</td>
+                <td>{{row[0]}}</td> 
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+           
+<form  action="{{url_for('deletebooks', id=row[5])}}" method="post"> 
+<input type="submit" value="DELETE">
+</form>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ 
+
+
+</body>
+</html>
+{% endblock %}
