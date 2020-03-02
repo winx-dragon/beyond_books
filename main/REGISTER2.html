@@ -8,12 +8,24 @@
 			<form action="{{ url_for('register') }}" method="POST">
 				<input type="text" name="username" placeholder="Username" id="username" required>
 				<input type="password" name="password" placeholder="Password" id="password" required>
-				<input type="password" name="confirm" placeholder=" Confirm Password" id="confirm" required>
-				
+				<input type="password" name="confirm" placeholder=" Confirm Password" id="confirm" required>			
 				<input type="email" name="email" placeholder="Email" id="email" required>
+				<input type="text" name="number" placeholder="Contact Number" id="number" required>
 				<div class="msg">{{ msg }}</div>
-				<input type="submit" value="Register">
+				<button>Register</button>	
+				{% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {% endwith %}
+			
 			</form>
+			
 		</div>
 {% endblock %}
 	</body>

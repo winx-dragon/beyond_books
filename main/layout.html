@@ -9,7 +9,7 @@
   <body>
   
     <header>
-      <img src="Image.jpg" alt="logo" height=150, width=150>
+      <img src="E:\Jahnavi\SCHOOL11\templates\Image.jpg" alt="logo" height=150, width=150>
       <div class="container">
         
         <h1 class="logo">BEYOND BOOKS</h1>
@@ -22,21 +22,6 @@
              <li><a href="{{ url_for('about') }}">About</a></li>
              
              
-             
-            <div class="search"> 
-                
-                <input type="text" placeholder="Search..." class="dropbtn">
-                <button type="submit"></button>
-                <i class="fa fa-search"></i>
-                <div class="dropdown-content">
-                {% for item in data %} 
-                    <a href="{{ url_for('home')}}" > {{item[0]}} by </a> 
-                    <a href="{{ url_for('home')}}"  > {{item[1]}}</a>
-               
-
-                {% endfor %}    
-                </div>
-            </div>
                     
             
             
@@ -98,10 +83,12 @@ dropdown {
 <div class="dropdown">
 <button class="dropbtn">LOGIN\REGISTER</button>
 <div class="dropdown-content">
-<a href="{{ url_for('logre')}}">LOGIN/REGISTER</a>
+
+<a href="{{ url_for('logre')}}" >LOGIN/REGISTER</a>
 <a href="{{ url_for('logout')}}">LOGOUT</a>
 <a href="{{ url_for('profile')}}">PROFILE</a>
 <a href="{{ url_for('admin')}}">ADMIN</a>
+<a href="{{ url_for('search')}}">SEARCH</a>
 
 </div>
 </div>
