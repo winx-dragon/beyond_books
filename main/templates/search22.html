@@ -8,7 +8,9 @@
         <link rel="stylesheet" href="/static/hom.css">
     </head>
     <body>
-        <h1><center>Library</center></h1>
+    {% extends "layout.html" %}
+{% block content %}
+        <h1><center>Basic Search</center></h1>
         <form  method="post" action="{{ url_for('search') }}" style="margin:auto;max-width:600px">
             <input type="text" placeholder="Search" name="search">
             <button type="submit"><i class="fa fa-search"></i>
@@ -48,3 +50,4 @@
         </center>
     </body>
 </html>
+{% endblock %}
