@@ -31,6 +31,7 @@ def about():
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
+    msg=''
     if request.method == "POST":
         search = request.form['search']
         ''' query1= "SELECT id,Name,Author FROM books WHERE books.Name = %s UNION ALL SELECT id,Name,MusicianBand FROM music WHERE music.Name = %s UNION ALL SELECT id,Name,Director FROM movies WHERE movies.Name = %s"
@@ -50,12 +51,15 @@ def search():
         cursor.execute(q3,[search+'%'])
         if cursor.rowcount>0:
              data3=cursor.fetchall()
-             return render_template('search22.html',data3=data3) 
-    return render_template('search22.html')
+             return render_template('search22.html',data3=data3)
+        else:
+             msg='Sorry no such book,movie or music'
+    return render_template('search22.html',msg=msg)
     
 @app.route('/userlogin/',methods=["GET","POST"])
 def userlogin():
     msg= ''
+    
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
@@ -71,7 +75,7 @@ def userlogin():
             return redirect(url_for('home'))
         
         else:
-             msg = 'Incorrect username/password!'
+             msg ='Incorrect username/password!'
     elif 'loggedin' in session:
         msg = 'You have already logged in. PLease log out'
     return render_template('userlogin.html', msg=msg) 
@@ -106,6 +110,7 @@ def login():
 @app.route('/logre/',methods=["GET","POST"])
 def logre():
     if 'loggedin' in session or 'adminloggedin' in session:
+        flash('You have already logged in.')
         return redirect(url_for('home'))
     return render_template('logre.html')
 l=[]
@@ -385,7 +390,8 @@ def profile():
         account = cursor.fetchone()
        
         return render_template('profile.html',account=account)
-   
+    else:
+        flash('You have to log in to view your profile')
     return redirect(url_for('home'))
 
     
@@ -394,6 +400,7 @@ def admin():
     if 'adminloggedin' in session:
             return render_template('elay.html')
     else:
+        flash('You do not have authorization. Please log in as an admin')
         return redirect(url_for('home'))
     
 @app.route('/users/', methods=['GET'])
@@ -511,28 +518,37 @@ def addmovies():
 
 @app.route('/logout/', methods = ['GET','POST'])
 def logout():
-    if 'loggedin' in session: 
-        session.pop('loggedin')
+    if 'loggedin' and 'adminloggedin' not in session: 
+        flash('You have to log in to log out.')
+        
     if 'adminloggedin'in session:
         session.pop('adminloggedin')
-    session.pop('id')
-    session.pop('username')        
+        session.pop('id')
+        session.pop('username')   
+        flash('You have successfully logged out')
+    if 'loggedin'in session:
+        session.pop('loggedin')
+        session.pop('id')
+        session.pop('username') 
+        flash('You have successfully logged out')
     return redirect(url_for('home'))
 
 @app.route('/register/', methods=["GET","POST"])
 def register():
     msg = ''
     if 'loggedin' in session:
-       msg = 'You have logged in already. Why would you register again?'
-    elif request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'confirm' in request.form and 'email' in request.form:
+       return redirect(url_for('home'))
+    elif request.method == 'POST' and 'username' in request.form and 'number' in request.form  and 'password' in request.form and 'confirm' in request.form and 'email' in request.form:
        username = request.form['username']
        password = request.form['password']
        confirm = request.form['confirm']
        email = request.form['email']
+       number = request.form['number']
        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
        cursor.execute('SELECT * FROM users WHERE username = %s', [username])
        register = cursor.fetchone()
-       
+       cursor.execute('SELECT * FROM users WHERE number = %s', [number])
+       num = cursor.fetchall()
        if register:
             msg = 'Account already exists!'
        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -541,12 +557,21 @@ def register():
             msg = 'Username must contain only characters and numbers!'
        elif not username or not password or not email:
             msg = 'Please fill out the form!'
+       elif num:
+            msg = 'This number is already in use. Please check again.'
        elif confirm!=password:
             msg = 'The passwords do not match ' 
        else:         
-            cursor.execute('INSERT INTO users VALUES (NULL,%s, %s, %s)', [username, password, email])
+            cursor.execute('INSERT INTO users VALUES (NULL,%s, %s, %s,%s)', [username, password, email,number])
             mysql.connection.commit()
-            flash('You have successfully registered! Thank you for registering.')
+            cursor.execute('SELECT * FROM users WHERE username = %s AND password = %s',[username,password])
+            login=cursor.fetchone()
+            if login:
+                session['loggedin'] = True
+                session['id'] = login['uid']
+                session['username'] = login['username']
+            flash('You have successfully registered! Thank you for registering.You have logged in')
+            
             return redirect(url_for('home'))
     elif request.method == 'POST':
             msg = 'Please fill out the form!'    
