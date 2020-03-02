@@ -16,7 +16,7 @@ def index():
     if request.method == 'POST':
         return search_results(search)
 
-    return render_template('index.html', form=search)
+    return render_template('Search.html', form=search)
 
 
 @app.route('/results')

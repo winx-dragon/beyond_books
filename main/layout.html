@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flask app</title>
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+  </head>
+  <body>
+  
+    <header>
+      <img src="E:\Jahnavi\SCHOOL11\templates\Image.jpg" alt="logo" height=150, width=150>
+      <div class="container">
+        
+        <h1 class="logo">BEYOND BOOKS</h1>
+        
+       
+        <strong><nav>
+          <ul class="menu">
+            
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+             <li><a href="{{ url_for('about') }}">About</a></li>
+             
+             
+             
+            <div class="search"> 
+                
+                <input type="text" placeholder="Search..." class="dropbtn">
+                <button type="submit"></button>
+                <i class="fa fa-search"></i>
+                <div class="dropdown-content">
+                {% for item in data %} 
+                    <a href="{{ url_for('home')}}" > {{item[0]}} by </a> 
+                    <a href="{{ url_for('home')}}"  > {{item[1]}}</a>
+               
+
+                {% endfor %}    
+                </div>
+            </div>
+                    
+            
+            
+            
+<style>
+.menu input[type=text] {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
+
+@media screen and (max-width: 600px) {
+  .menu a, .menu input[type=text] {
+    float: none;
+    display: block;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+    padding: 14px;
+  }
+  .menu input[type=text] {
+    border: 1px solid #ccc;
+  }
+}
+
+
+.dropbtn {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    font-size: 15px;
+    border: none;
+}
+dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: lightgrey;
+    min-width: 20px;
+    z-index: 1;
+}
+.dropdown-content a {
+    color: black;
+    padding: 35px 35px;
+    text-decoration: none;
+    display: block;
+}
+.dropdown-content a:hover {background-color: white;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color: grey;}
+</style>
+</head>
+<div class="dropdown">
+<button class="dropbtn">LOGIN\REGISTER</button>
+<div class="dropdown-content">
+<a href="{{ url_for('logre')}}">LOGIN/REGISTER</a>
+<a href="{{ url_for('logout')}}">LOGOUT</a>
+<a href="{{ url_for('profile')}}">PROFILE</a>
+<a href="{{ url_for('admin')}}">ADMIN</a>
+
+</div>
+</div>
+            
+            
+                   
+          </ul>
+        </nav></strong>
+      </div>
+    </header>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+
+
+
+    
+    
+    </div>
+  </li>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+    {% for row in value %} 
+		<div class="displaymovies">
+            <h1>{{row[1]}}</h1>
+            <form  action="{{url_for('displaymovies', id=row[0])}}">  
+    				<p>Director: {{row[2]}}</p>
+				
+				<p>Year Published: {{row[3]}}</p>
+				<p>Genre: {{row[4]}}</p>
+				<p>Description: {{row[5]}}</p>
+				<p>Quantity: {{row[6]}}</p>
+				
+			</form>
+    {% endfor %}        
+            
+	     </div>
+{% endblock %}
+	</body>
+</html>

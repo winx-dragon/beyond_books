@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+<div class="books">
+			
+			<form action="{{ url_for('editbooks') }}" method="POST">
+				<input type="text" name="name" placeholder="Name" id="name" required>
+				<input type="text" name="author" placeholder="Author" id="author" required>
+				<input type="text" name="publisher" placeholder="Publisher" id="publisher" required>
+				<input type="text" name="year" placeholder="Year" id="year" required>
+				<input type="text" name="description" placeholder="Description" id="description" required>
+				<input type="submit" value="Submit">
+				
+				
+			</form>
+</div>
+
+	</body>
+</html>
+{% endblock %}
