@@ -132,7 +132,7 @@ def deletebooks(id):
         for x in number:
             l.append(x[0])
         for i in range(len(l)):
-            if l[i-1]!=l[i]-1:
+            if l[i+1]!=l[i]+1:
                     qry="UPDATE books SET id=%s WHERE id=%s"
                     cursor.execute(qry,[l[i]-1,l[i]])
                     conn.commit()
