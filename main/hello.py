@@ -118,7 +118,7 @@ l=[]
 def deletebooks(id):  
     qry = 'SELECT * FROM books WHERE id=%s'
     cursor.execute(qry,[id])
-    data = cursor.fetchall()    
+    data = cursor.fetchall()   
     if request.method =='POST':
         qry = 'DELETE FROM books WHERE id=%s'
         cursor.execute(qry,[id])
@@ -132,14 +132,11 @@ def deletebooks(id):
         for x in number:
             l.append(x[0])
         for i in range(len(l)):
-            if i==len(l)-1:
-                qry="UPDATE books SET id=%s WHERE id=%s"
-                cursor.execute(qry,[l[i]+1,l[i]])
-                conn.commit()
-            elif l[i]+1!=l[i+1]:
-                 qry="UPDATE books SET id=%s WHERE id=%s"
-                 cursor.execute(qry,[l[i]+1,l[i+1]])
-                 conn.commit()
+            if l[i-1]!=l[i]-1:
+                    qry="UPDATE books SET id=%s WHERE id=%s"
+                    cursor.execute(qry,[l[i]-1,l[i]])
+                    conn.commit()
+           
         qry = 'SELECT * FROM books'
         cursor.execute(qry)
         data=cursor.fetchall()
