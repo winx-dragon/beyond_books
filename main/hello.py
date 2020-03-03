@@ -38,7 +38,7 @@ def search():
         cursor.execute(query1,[search,search,search])
         data = cursor.fetchall() '''
         q1="SELECT id,Name,Author FROM books WHERE Name LIKE %s"
-        q2="SELECT id,Name,Director FROM movies WHERE Name LIKE %s"
+        q2="SELECT id,Name,Director FROM movie WHERE Name LIKE %s"
         q3="SELECT id,Name,MusicianBand FROM music WHERE Name LIKE %s"
         cursor.execute(q1,[search+'%']) 
         if cursor.rowcount>0:
@@ -115,15 +115,7 @@ def logre():
     return render_template('logre.html')
 l=[]
 @app.route('/deletebooks/<id>', methods=['GET', 'POST'])
-def deletebooks(id):
-#   x=int(id)    
- #   q="SELECT COUNT(id) FROM BOOKS WHERE id>%s"
-  #  cursor.execute(q,[x])
-   # for i in range(1,int(q+1)):
-    #    j=x
-     #   qq="UPDATE books SET id=%s WHERE id=%s"
-      #  cursor.execute(qq,[j,x])'''
-   
+def deletebooks(id):  
     qry = 'SELECT * FROM books WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()    
@@ -140,7 +132,11 @@ def deletebooks(id):
         for x in number:
             l.append(x[0])
         for i in range(len(l)):
-            if i!=len(l)-1 and l[i]+1!=l[i+1]:
+            if i==len(l)-1:
+                qry="UPDATE books SET id=%s WHERE id=%s"
+                cursor.execute(qry,[l[i]+1,l[i]])
+                conn.commit()
+            elif l[i]+1!=l[i+1]:
                  qry="UPDATE books SET id=%s WHERE id=%s"
                  cursor.execute(qry,[l[i]+1,l[i+1]])
                  conn.commit()
@@ -213,7 +209,7 @@ def editbook(id):
 
 @app.route('/editmovie/<id>',methods=["GET","POST"])
 def editmovie(id):
-    qry = 'SELECT * FROM movies WHERE id=%s'
+    qry = 'SELECT * FROM movie WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()
     if request.method =='POST':        
@@ -223,40 +219,40 @@ def editmovie(id):
         Description=request.form['description']
         Genre=request.form['genre']
         Quantity=request.form['quantity']
-        qry = 'SELECT name FROM movies WHERE id=%s'
-        aqry= 'SELECT director FROM movies WHERE id=%s'
-        yqry = 'SELECT year FROM movies WHERE id=%s'
-        dqry = 'SELECT description FROM movies WHERE id=%s'
-        gqry = 'SELECT genre FROM movies WHERE id=%s'
-        qqry = 'SELECT quantity FROM movies WHERE id=%s'
+        qry = 'SELECT name FROM movie WHERE id=%s'
+        aqry= 'SELECT director FROM movie WHERE id=%s'
+        yqry = 'SELECT year FROM movie WHERE id=%s'
+        dqry = 'SELECT description FROM movie WHERE id=%s'
+        gqry = 'SELECT genre FROM movie WHERE id=%s'
+        qqry = 'SELECT quantity FROM movie WHERE id=%s'
         if Name!= qry:
-            qry="UPDATE movies SET name=%s Where id=%s"
+            qry="UPDATE movie SET name=%s Where id=%s"
             cursor.execute(qry,[Name,id])
             conn.commit()
             
         if Director!= aqry:
-            qry="UPDATE movies SET director=%s Where id=%s"
+            qry="UPDATE movie SET director=%s Where id=%s"
             cursor.execute(qry,[Director,id])
             conn.commit()
             
         if Year!= yqry:
-            qry="UPDATE movies SET year=%s Where id=%s"
+            qry="UPDATE movie SET year=%s Where id=%s"
             cursor.execute(qry,[Year,id])
             conn.commit()
         if Description!= dqry:
-            qry="UPDATE movies SET description=%s Where id=%s"
+            qry="UPDATE movie SET description=%s Where id=%s"
             cursor.execute(qry,[Description,id])
             conn.commit()
         if Genre!= gqry:
-            qry="UPDATE movies SET genre=%s Where id=%s"
+            qry="UPDATE movie SET genre=%s Where id=%s"
             cursor.execute(qry,[Genre,id])
             conn.commit()
         if Quantity!= qqry:
-            qry="UPDATE movies SET quantity=%s Where id=%s"
+            qry="UPDATE movie SET quantity=%s Where id=%s"
             cursor.execute(qry,[Quantity,id])
             conn.commit()
         
-        qry='SELECT * FROM movies WHERE id=%s'
+        qry='SELECT * FROM movie WHERE id=%s'
         cursor.execute(qry,[id])
         data=cursor.fetchall()
         msg = 'The changes have been made'
@@ -327,36 +323,63 @@ def editmusic(id):
 
 @app.route('/deletemovies/<id>', methods=['GET', 'POST'])
 def deletemovies(id):
-    qry = 'SELECT * FROM movies WHERE id=%s'
+    qry = 'SELECT * FROM movie WHERE id=%s'
     cursor.execute(qry,[id])
-    data = cursor.fetchall()
-        
+    data = cursor.fetchall()    
     if request.method =='POST':
-        qry = 'DELETE FROM movies WHERE id=%s'
+        qry = 'DELETE FROM movie WHERE id=%s'
         cursor.execute(qry,[id])
         conn.commit()
-        qry = 'SELECT * FROM movies'
-        cursor.execute(qry,)
+        qry =  "SELECT id FROM movie"
+        cursor.execute(qry)
+        number=cursor.fetchall()
+        for x in number:
+            l.append(x[0])
+        for i in range(len(l)):
+            if i==len(l)-1:
+                qry="UPDATE movie SET id=%s WHERE id=%s"
+                cursor.execute(qry,[i+1,l[i]])
+                conn.commit()
+            elif l[i]+1!=l[i+1]:
+                 qry="UPDATE movie SET id=%s WHERE id=%s"
+                 cursor.execute(qry,[l[i]+1,l[i+1]])
+                 conn.commit()
+        qry = 'SELECT * FROM movie'
+        cursor.execute(qry)
         data=cursor.fetchall()
         return redirect(url_for('movies', value=data))
-
-    return render_template('deletemovies.html', value=data)
+    return render_template('deletemovies.html',value=data)
 
 @app.route('/deletemusic/<id>', methods=['GET', 'POST'])
 def deletemusic(id):
     qry = 'SELECT * FROM music WHERE id=%s'
     cursor.execute(qry,[id])
-    data = cursor.fetchall()
-        
+    data = cursor.fetchall()    
     if request.method =='POST':
         qry = 'DELETE FROM music WHERE id=%s'
         cursor.execute(qry,[id])
         conn.commit()
+        qry =  "SELECT id FROM music"
+        cursor.execute(qry)
+        number=cursor.fetchall()
+        '''n=list(sum(number, ()))
+        for i in range(len(n)):   
+             if n[i]+1!=n[i+1]:'''
+        for x in number:
+            l.append(x[0])
+        for i in range(len(l)):
+            if i==len(l)-1:
+                qry="UPDATE music SET id=%s WHERE id=%s"
+                cursor.execute(qry,[i+1,l[i]])
+                conn.commit()
+            elif l[i]+1!=l[i+1]:
+                 qry="UPDATE music SET id=%s WHERE id=%s"
+                 cursor.execute(qry,[l[i]+1,l[i+1]])
+                 conn.commit()
         qry = 'SELECT * FROM music'
-        cursor.execute(qry,)
+        cursor.execute(qry)
         data=cursor.fetchall()
         return redirect(url_for('music', value=data))
-
     return render_template('deletemusic.html', value=data)
 
 @app.route('/displaybooks/<id>')
@@ -376,7 +399,7 @@ def displaymusic(id):
 
 @app.route('/displaymovies/<id>')
 def displaymovies(id):
-    qry = 'SELECT * FROM movies WHERE id=%s'
+    qry = 'SELECT * FROM movie WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()
     conn.commit()
@@ -390,8 +413,10 @@ def profile():
         account = cursor.fetchone()
        
         return render_template('profile.html',account=account)
+    elif 'adminloggedin' in session:
+        flash('No access for admins')
     else:
-        flash('You have to log in to view your profile')
+        flash('Not logged in.')
     return redirect(url_for('home'))
 
     
@@ -473,7 +498,10 @@ def addmusic():
        if check:
            msg='This piece has already been  added....'
        else:           
-           cursor.execute('INSERT INTO music VALUES(NULL,%s, %s,%s,%s,%s,%s,%s)', [name, musicianband,album, year,description,genre,quantity])
+           cursor.execute('SELECT MAX(id) From music')
+           r=cursor.fetchone()
+           maxid=list(r.values())
+           cursor.execute('INSERT INTO music VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, musicianband,album, year,description,genre,quantity])
            mysql.connection.commit()
            return redirect(url_for('music'))
     
@@ -485,7 +513,7 @@ def movies():
 
     conn = MySQLdb.connect("localhost","root","anki@123janvi","pythonregister" )
     cursor = conn.cursor()
-    query = "SELECT * from movies"
+    query = "SELECT * from movie"
     cursor.execute(query)
     data = cursor.fetchall()
     conn.close()
@@ -503,14 +531,17 @@ def addmovies():
        quantity=request.form['quantity']
        description = request.form['description']
        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-       cursor.execute('SELECT * FROM movies WHERE name = %s and director = %s', [name,director])
+       cursor.execute('SELECT * FROM movie WHERE name = %s and director = %s', [name,director])
        check=cursor.fetchone()
        if check:
            msg='This movie has already been  added....' 
        else:           
-           cursor.execute('INSERT INTO movies VALUES(NULL,%s, %s,%s,%s,%s,%s)', [name, director, year,description,genre,quantity])
+           cursor.execute('SELECT MAX(id) From movie')
+           r=cursor.fetchone()
+           maxid=list(r.values())
+           cursor.execute('INSERT INTO movie VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, director,year,description,genre,quantity])
            mysql.connection.commit()
-           return redirect(url_for('movies'))
+           return redirect(url_for('books'))
     
     return render_template('addmovies.html',msg=msg)
     
@@ -518,19 +549,18 @@ def addmovies():
 
 @app.route('/logout/', methods = ['GET','POST'])
 def logout():
-    if 'loggedin' and 'adminloggedin' not in session: 
-        flash('You have to log in to log out.')
+    
         
     if 'adminloggedin'in session:
         session.pop('adminloggedin')
         session.pop('id')
         session.pop('username')   
-        flash('You have successfully logged out')
+        
     if 'loggedin'in session:
         session.pop('loggedin')
         session.pop('id')
         session.pop('username') 
-        flash('You have successfully logged out')
+        
     return redirect(url_for('home'))
 
 @app.route('/register/', methods=["GET","POST"])
