@@ -38,6 +38,14 @@
             <div class="msg">{{ msg }}</div>
 </form>
 {% endfor %}
+<button onclick="redirect()">Back to Movies</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/movies/";
+                     }, 5);
+                 };
+        </script>
 	</body>
 </html>
 {% endblock %}

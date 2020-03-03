@@ -49,10 +49,19 @@
                 
             </tr>
         {% endfor %}
+        <button onclick="redirect()">Back to Admin</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/admin/";
+                     }, 5);
+                 };
+        </script>
     </tbody>
 
 </table>
 <a href="{{ url_for('addmusic') }}">ADD MUSIC</a>
+
 </body>
 </html>
 {% endblock %}

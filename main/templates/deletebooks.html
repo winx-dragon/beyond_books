@@ -50,6 +50,14 @@
 </form>
             </tr>
         {% endfor %}
+        <button onclick="redirect()">Back to Books</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/books/";
+                     }, 5);
+                 };
+        </script>
     </tbody>
 </table>
  

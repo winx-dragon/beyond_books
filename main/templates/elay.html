@@ -9,6 +9,14 @@
              <li><a href="{{ url_for('movies') }}">Movies</a></li>
              <li><a href="{{ url_for('music') }}">Music</a></li>
              <li><a href="{{url_for('users')}}"> Users</a></li>
+             <button onclick="redirect()">Logout</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ alert("Logout successfull"); 
+                     window.location.href = "http://localhost:5000/logout/";
+                     }, 5);
+                 };
+        </script>
   </li>
   </body>
 {% endblock %}

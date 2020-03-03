@@ -23,6 +23,8 @@
         <th>ID</th>
         <th>Name</th>
         <th>Email</th>
+        <th>Contact Number</th>
+        
         
     </tr>
     </thead>
@@ -31,9 +33,18 @@
             <tr>
                 <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td> 
-                <td>{{row[3]}}</td>                
+                <td>{{row[3]}}</td>  
+                <td>{{row[4]}}</td>            
             </tr>
         {% endfor %}
+        <button onclick="redirect()">Back to Admin</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/admin/";
+                     }, 5);
+                 };
+        </script>
     </tbody>
 
 </table>

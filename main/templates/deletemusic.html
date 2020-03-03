@@ -51,6 +51,14 @@
 </form>
             </tr>
         {% endfor %}
+        <button onclick="redirect()">Back to Music</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/music/";
+                     }, 5);
+                 };
+        </script>
     </tbody>
 </table>
  

@@ -23,6 +23,14 @@
             <td>{{ account['number'] }}</td>
         </tr>
     </table>
+     <button onclick="redirect()">Logout</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ alert("Logout successfull"); 
+                     window.location.href = "http://localhost:5000/logout/";
+                     }, 5);
+                 };
+        </script>
 </div>
 {% endblock %}
 </body>
