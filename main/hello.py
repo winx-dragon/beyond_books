@@ -115,26 +115,32 @@ def logre():
     return render_template('logre.html')
 l=[]
 @app.route('/deletebooks/<id>', methods=['GET', 'POST'])
-def deletebooks(id):  
+def deletebooks(id): 
+    l=[]
     qry = 'SELECT * FROM books WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()   
+   
     if request.method =='POST':
-        qry = 'DELETE FROM books WHERE id=%s'
+        qry='select id from books where id> %s'
         cursor.execute(qry,[id])
         conn.commit()
-        qry =  "SELECT id FROM books"
-        cursor.execute(qry)
-        number=cursor.fetchall()
-        '''n=list(sum(number, ()))
-        for i in range(len(n)):   
-             if n[i]+1!=n[i+1]:'''
-        for x in number:
-            l.append(x[0])
-        for i in range(len(l)):
-            if l[i+1]!=l[i]+1:
+        if cursor.rowcount==0:
+            qry = 'DELETE FROM books WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()            
+        else:                        	
+            number=cursor.fetchall()
+            for x in number:
+                l.append(x[0])
+            a=l[0]
+            l.insert(0,a-1)            
+            qry = 'DELETE FROM books WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()        
+            for i in range(len(l)):            
                     qry="UPDATE books SET id=%s WHERE id=%s"
-                    cursor.execute(qry,[l[i]-1,l[i]])
+                    cursor.execute(qry,[l[i],l[i]+1])
                     conn.commit()
            
         qry = 'SELECT * FROM books'
@@ -320,27 +326,33 @@ def editmusic(id):
 
 @app.route('/deletemovies/<id>', methods=['GET', 'POST'])
 def deletemovies(id):
+    l=[]
     qry = 'SELECT * FROM movie WHERE id=%s'
     cursor.execute(qry,[id])
-    data = cursor.fetchall()    
+    data = cursor.fetchall()   
+   
     if request.method =='POST':
-        qry = 'DELETE FROM movie WHERE id=%s'
+        qry='select id from movie where id> %s'
         cursor.execute(qry,[id])
         conn.commit()
-        qry =  "SELECT id FROM movie"
-        cursor.execute(qry)
-        number=cursor.fetchall()
-        for x in number:
-            l.append(x[0])
-        for i in range(len(l)):
-            if i==len(l)-1:
-                qry="UPDATE movie SET id=%s WHERE id=%s"
-                cursor.execute(qry,[i+1,l[i]])
-                conn.commit()
-            elif l[i]+1!=l[i+1]:
-                 qry="UPDATE movie SET id=%s WHERE id=%s"
-                 cursor.execute(qry,[l[i]+1,l[i+1]])
-                 conn.commit()
+        if cursor.rowcount==0:
+            qry = 'DELETE FROM movie WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()            
+        else:                        	
+            number=cursor.fetchall()
+            for x in number:
+                l.append(x[0])
+            a=l[0]
+            l.insert(0,a-1)            
+            qry = 'DELETE FROM movie WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()        
+            for i in range(len(l)):            
+                    qry="UPDATE movie SET id=%s WHERE id=%s"
+                    cursor.execute(qry,[l[i],l[i]+1])
+                    conn.commit()
+           
         qry = 'SELECT * FROM movie'
         cursor.execute(qry)
         data=cursor.fetchall()
@@ -349,30 +361,33 @@ def deletemovies(id):
 
 @app.route('/deletemusic/<id>', methods=['GET', 'POST'])
 def deletemusic(id):
+    l=[]
     qry = 'SELECT * FROM music WHERE id=%s'
     cursor.execute(qry,[id])
-    data = cursor.fetchall()    
+    data = cursor.fetchall()   
+   
     if request.method =='POST':
-        qry = 'DELETE FROM music WHERE id=%s'
+        qry='select id from music where id> %s'
         cursor.execute(qry,[id])
         conn.commit()
-        qry =  "SELECT id FROM music"
-        cursor.execute(qry)
-        number=cursor.fetchall()
-        '''n=list(sum(number, ()))
-        for i in range(len(n)):   
-             if n[i]+1!=n[i+1]:'''
-        for x in number:
-            l.append(x[0])
-        for i in range(len(l)):
-            if i==len(l)-1:
-                qry="UPDATE music SET id=%s WHERE id=%s"
-                cursor.execute(qry,[i+1,l[i]])
-                conn.commit()
-            elif l[i]+1!=l[i+1]:
-                 qry="UPDATE music SET id=%s WHERE id=%s"
-                 cursor.execute(qry,[l[i]+1,l[i+1]])
-                 conn.commit()
+        if cursor.rowcount==0:
+            qry = 'DELETE FROM music WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()            
+        else:                        	
+            number=cursor.fetchall()
+            for x in number:
+                l.append(x[0])
+            a=l[0]
+            l.insert(0,a-1)            
+            qry = 'DELETE FROM music WHERE id=%s'
+            cursor.execute(qry,[id])
+            conn.commit()        
+            for i in range(len(l)):            
+                    qry="UPDATE music SET id=%s WHERE id=%s"
+                    cursor.execute(qry,[l[i],l[i]+1])
+                    conn.commit()
+           
         qry = 'SELECT * FROM music'
         cursor.execute(qry)
         data=cursor.fetchall()
@@ -458,6 +473,7 @@ def addbooks():
        check=cursor.fetchone()
        if check:
            msg='This book has already been  added....'
+           
        else:           
            cursor.execute('SELECT MAX(id) From books')
            r=cursor.fetchone()
