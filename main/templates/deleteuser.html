@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+<style> 
+        table, th, td { 
+            border: 1px solid black; 
+            border-collapse: collapse; 
+        } 
+          
+        th, td { 
+            padding: 5px; 
+            text-align: left; 
+        } 
+          
+    </style> 
+
+
+
+<table style="width:100%"> 
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact Number</th>
+        
+        
+        
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in value %} 
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td> 
+                
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+          
+<form  action="{{url_for('deleteuser', id=row[0])}}" method="post"> 
+<input type="submit" value="DELETE">
+</form>
+            </tr>
+            
+        {% endfor %}
+        <button onclick="redirect()">Back to Movies</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ 
+                     window.location.href = "http://localhost:5000/users/";
+                     }, 5);
+                 };
+        </script>
+    </tbody>
+</table>
+ 
+
+
+</body>
+</html>
+{% endblock %}

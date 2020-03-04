@@ -5,7 +5,6 @@ import re
 import MySQLdb
 
 
-
 app = Flask(__name__)
 
 app.secret_key = "allthelettersofthealphabet"
@@ -113,6 +112,43 @@ def logre():
         flash('You have already logged in.')
         return redirect(url_for('home'))
     return render_template('logre.html')
+
+
+'''@app.route('/deleteuser/<id>', methods=['GET', 'POST'])
+def deleteuser(id):
+    l=[]
+    qry = 'SELECT * FROM users WHERE uid=%s'
+    cursor.execute(qry,[id])
+    data = cursor.fetchall()   
+   
+    if request.method =='POST':
+        qry='select uid from users where uid> %s'
+        cursor.execute(qry,[id])
+        conn.commit()
+        if cursor.rowcount==0:
+            qry = 'DELETE FROM users WHERE uid=%s'
+            cursor.execute(qry,[id])
+            conn.commit()            
+        else:                        	
+            number=cursor.fetchall()
+            for x in number:
+                l.append(x[0])
+            a=l[0]
+            l.insert(0,a-1)            
+            qry = 'DELETE FROM users WHERE uid=%s'
+            cursor.execute(qry,[id])
+            conn.commit()        
+            for i in range(len(l)):            
+                    qry="UPDATE users SET uid=%s WHERE uid=%s"
+                    cursor.execute(qry,[l[i],l[i]+1])
+                    conn.commit()
+           
+        qry = 'SELECT * FROM users'
+        cursor.execute(qry)
+        data=cursor.fetchall()
+        return redirect(url_for('users', value=data))
+    return render_template('deleteuser.html',value=data)'''
+
 l=[]
 @app.route('/deletebooks/<id>', methods=['GET', 'POST'])
 def deletebooks(id): 
@@ -537,8 +573,7 @@ def addmovies():
     msg=''
     if request.method == "POST" and 'name' in request.form and 'genre' in request.form and 'director' in request.form and 'year' in request.form and 'description' in request.form and 'quantity' in request.form:
        name = request.form['name']      
-       director = request.form['director']
-      
+       director = request.form['director']     
        year = request.form['year']
        genre=request.form['genre']
        quantity=request.form['quantity']
@@ -561,9 +596,7 @@ def addmovies():
 
 
 @app.route('/logout/', methods = ['GET','POST'])
-def logout():
-    
-        
+def logout():       
     if 'adminloggedin'in session:
         session.pop('adminloggedin')
         session.pop('id')
