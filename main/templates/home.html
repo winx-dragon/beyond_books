@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <body>
    {% extends "layout.html" %}
@@ -26,7 +26,7 @@
            
            
            {% for item in list1 %} 
-           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" usemap="#workmap"/></a>
+           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" /></a>
 
 
             {% endfor %} 
