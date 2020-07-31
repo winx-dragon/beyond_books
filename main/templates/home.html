@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
   <body>
-   {% extends "dropdown.html" %}
+   {% extends "layout.html" %}
    {% block content %}
    {% with messages = get_flashed_messages() %}
                       {% if messages %}
@@ -18,6 +18,21 @@
           <h1>Find what you seek</h1>
             <p>This website allows our users to borrow new and old books, music and movies form our varied collection. 
             Enjoy.</p>
+            
+            
+            
+        <div class="display">
+            <h1>Here are our literary collections:</h1>
+           
+           
+           {% for item in list1 %} 
+           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" usemap="#workmap"/></a>
+
+
+            {% endfor %} 
+
+            
+        
             
             
         

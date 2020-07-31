@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+			
+			<form action="{{ url_for('addbook') }}" method="POST">
+				
+				<fieldset>
+                <legend>Add Books:</legend>
+                
+                <label for="name">Name:</label><br>
+                <input type="text" name="name"  id="name" required><br><br>
+                
+                <label for="author">Author:</label><br>
+                <input type="text" name="author"  id="author" required><br><br>
+               
+                <label for="publisher">Publisher:</label><br>
+                <input type="text" name="publisher"  id="publisher" required><br><br>
+               
+                <label for="year">Year:</label><br>
+                <input type="text" name="year" id="year" required><br><br>
+                
+                <label for="genre">Genre:</label><br>
+                <input type="text" name="genre" id="genre" required><br><br>   
+                
+                <label for="description">Description:</label><br>
+                <input type="text" name="description"  id="description" required><br><br>
+                
+                <label for="quantity">Quantity:</label><br>
+                <input type="text" name="quantity"  id="quantity" required><br><br>
+                
+                <input type="submit" value="Submit">
+            </fieldset>
+            <div class="msg">{{ msg }}</div>
+				
+			</form>
+
+
+	</body>
+</html>
+{% endblock %}

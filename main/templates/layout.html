@@ -1,15 +1,14 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <title>Flask app</title>
-   
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    
+    <title>Flask app</title>   
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">    
   </head>
   <body>
   
     <header>
-      <img src="E:\Jahnavi\SCHOOL11\templates\Image.jpg" alt="logo" height=150, width=150>
+      <img src="{{url_for('static', filename='Image.jpg')}}" align="middle" height=10 width=10 />
+    
       <div class="container">
         
         <h1 class="logo">BEYOND BOOKS</h1>
@@ -19,13 +18,7 @@
           <ul class="menu">
             
             <li><a href="{{ url_for('home') }}">Home</a></li>
-             <li><a href="{{ url_for('about') }}">About</a></li>
-             
-             
-                    
-            
-            
-            
+             <li><a href="{{ url_for('about') }}">About</a></li>            
 <style>
 .menu input[type=text] {
   float: right;
@@ -91,10 +84,7 @@ dropdown {
 <a href="{{ url_for('search')}}">SEARCH</a>
 
 </div>
-</div>
-            
-            
-                   
+</div>                   
           </ul>
         </nav></strong>
       </div>

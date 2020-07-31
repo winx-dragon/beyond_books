@@ -22,9 +22,14 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Email</th>
-        <th>Contact Number</th>
-        
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Year</th>
+        <th>Genre</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>           </th>
+        <th>           </th>
         
     </tr>
     </thead>
@@ -33,9 +38,15 @@
             <tr>
                 <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td> 
-                <td>{{row[3]}}</td>  
-                <td>{{row[4]}}</td>  
-                    
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td> 
+                <td><a href="{{ url_for('editbook', id=row[0]) }}"  > Edit </a></td> 
+                <td><a href="{{ url_for('deletebook', id=row[0]) }}"  > Delete </a></td>
+                
             </tr>
         {% endfor %}
         <button onclick="redirect()">Back to Admin</button>				
@@ -49,6 +60,7 @@
     </tbody>
 
 </table>
+<a href="{{ url_for('addbook')}}">ADD BOOKS</a>
 </body>
 </html>
 {% endblock %}

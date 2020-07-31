@@ -1,0 +1,4 @@
+Add contact info on about etc
+user settings[change the passsword, delete yor account,change your gmail,contact no.]
+in user table - how many books they've borrowed,fine
+user pic and admin pic

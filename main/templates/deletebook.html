@@ -14,16 +14,21 @@
             text-align: left; 
         } 
           
-
     </style> 
+
+
 
 <table style="width:100%"> 
     <thead>
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Email</th>
-        <th>Contact Number</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Year</th>
+        <th>Genre</th>
+        <th>Description</th>
+        <th>Quantity</th>
         
         
     </tr>
@@ -33,22 +38,31 @@
             <tr>
                 <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td> 
-                <td>{{row[3]}}</td>  
-                <td>{{row[4]}}</td>  
-                    
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+                <td>{{row[5]}}</td>
+                <td>{{row[6]}}</td>
+                <td>{{row[7]}}</td>
+               
+<form  action="{{url_for('deletebook', id=row[0])}}" method="post"> 
+<input type="submit" value="DELETE">
+</form>
             </tr>
         {% endfor %}
-        <button onclick="redirect()">Back to Admin</button>				
+        <button onclick="redirect()">Back to Books</button>				
             <script>
             var redirect = function() {
                  setTimeout(function(){ 
-                     window.location.href = "http://localhost:5000/admin/";
+                     window.location.href = "http://localhost:5000/book/";
                      }, 5);
                  };
         </script>
     </tbody>
-
 </table>
+ 
+
+
 </body>
 </html>
 {% endblock %}
