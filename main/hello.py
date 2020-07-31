@@ -3,6 +3,8 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 import MySQLdb
+from base64 import b64encode
+
 
 
 app = Flask(__name__)
@@ -19,10 +21,20 @@ mysql=MySQL(app)
 mysql = MySQL()
 conn = MySQLdb.connect("localhost","root","anki@123janvi","pythonregister" )
 cursor = conn.cursor()
-
+cursor2=conn.cursor()
+list1=[]
 @app.route('/')
 def home():
-    return render_template("home.html")
+    qry = 'SELECT Image FROM book'
+    cursor.execute(qry)    
+    data = cursor.fetchall()
+    ct=len(data)
+    for x in range(0,ct):
+            A=data[x][0]
+            ph=b64encode(A).decode("utf-8")
+            if [ph,x+1] not in list1:
+                list1.append([ph,x+1])   
+    return render_template("home.html",list1=list1)
 
 @app.route('/about/')
 def about():
@@ -33,10 +45,10 @@ def search():
     msg=''
     if request.method == "POST":
         search = request.form['search']
-        ''' query1= "SELECT id,Name,Author FROM books WHERE books.Name = %s UNION ALL SELECT id,Name,MusicianBand FROM music WHERE music.Name = %s UNION ALL SELECT id,Name,Director FROM movies WHERE movies.Name = %s"
+        ''' query1= "SELECT id,Name,Author FROM book WHERE book.Name = %s UNION ALL SELECT id,Name,MusicianBand FROM music WHERE music.Name = %s UNION ALL SELECT id,Name,Director FROM movies WHERE movies.Name = %s"
         cursor.execute(query1,[search,search,search])
         data = cursor.fetchall() '''
-        q1="SELECT id,Name,Author FROM books WHERE Name LIKE %s"
+        q1="SELECT id,Name,Author FROM book WHERE Name LIKE %s"
         q2="SELECT id,Name,Director FROM movie WHERE Name LIKE %s"
         q3="SELECT id,Name,MusicianBand FROM music WHERE Name LIKE %s"
         cursor.execute(q1,[search+'%']) 
@@ -150,19 +162,19 @@ def deleteuser(id):
     return render_template('deleteuser.html',value=data)'''
 
 l=[]
-@app.route('/deletebooks/<id>', methods=['GET', 'POST'])
-def deletebooks(id): 
+@app.route('/deletebook/<id>', methods=['GET', 'POST'])
+def deletebook(id): 
     l=[]
-    qry = 'SELECT * FROM books WHERE id=%s'
+    qry = 'SELECT * FROM book WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()   
    
     if request.method =='POST':
-        qry='select id from books where id> %s'
+        qry='select id from book where id> %s'
         cursor.execute(qry,[id])
         conn.commit()
         if cursor.rowcount==0:
-            qry = 'DELETE FROM books WHERE id=%s'
+            qry = 'DELETE FROM book WHERE id=%s'
             cursor.execute(qry,[id])
             conn.commit()            
         else:                        	
@@ -171,23 +183,23 @@ def deletebooks(id):
                 l.append(x[0])
             a=l[0]
             l.insert(0,a-1)            
-            qry = 'DELETE FROM books WHERE id=%s'
+            qry = 'DELETE FROM book WHERE id=%s'
             cursor.execute(qry,[id])
             conn.commit()        
             for i in range(len(l)):            
-                    qry="UPDATE books SET id=%s WHERE id=%s"
+                    qry="UPDATE book SET id=%s WHERE id=%s"
                     cursor.execute(qry,[l[i],l[i]+1])
                     conn.commit()
            
-        qry = 'SELECT * FROM books'
+        qry = 'SELECT * FROM book'
         cursor.execute(qry)
         data=cursor.fetchall()
-        return redirect(url_for('books', value=data))
+        return redirect(url_for('book', value=data))
 
-    return render_template('deletebooks.html', value=data)
+    return render_template('deletebook.html', value=data)
 @app.route('/editbook/<id>',methods=["GET","POST"])
 def editbook(id):
-    qry = 'SELECT * FROM books WHERE id=%s'
+    qry = 'SELECT * FROM book WHERE id=%s'
     cursor.execute(qry,[id])
     data = cursor.fetchall()
     if request.method =='POST':        
@@ -198,45 +210,45 @@ def editbook(id):
         Description=request.form['description']
         Genre=request.form['genre']
         Quantity=request.form['quantity']
-        qry = 'SELECT name FROM books WHERE id=%s'
-        aqry= 'SELECT author FROM books WHERE id=%s'
-        pqry = 'SELECT publisher FROM books WHERE id=%s'
-        yqry = 'SELECT year FROM books WHERE id=%s'
-        dqry = 'SELECT description FROM books WHERE id=%s'
-        gqry = 'SELECT genre FROM books WHERE id=%s'
-        qqry = 'SELECT quantity FROM books WHERE id=%s'
+        qry = 'SELECT name FROM book WHERE id=%s'
+        aqry= 'SELECT author FROM book WHERE id=%s'
+        pqry = 'SELECT publisher FROM book WHERE id=%s'
+        yqry = 'SELECT year FROM book WHERE id=%s'
+        dqry = 'SELECT description FROM book WHERE id=%s'
+        gqry = 'SELECT genre FROM book WHERE id=%s'
+        qqry = 'SELECT quantity FROM book WHERE id=%s'
         if Name!= qry:
-            qry="UPDATE books SET name=%s Where id=%s"
+            qry="UPDATE book SET name=%s Where id=%s"
             cursor.execute(qry,[Name,id])
             conn.commit()
             
         if Author!= aqry:
-            qry="UPDATE books SET author=%s Where id=%s"
+            qry="UPDATE book SET author=%s Where id=%s"
             cursor.execute(qry,[Author,id])
             conn.commit()
             
         if Publisher!= pqry:
-            qry="UPDATE books SET publisher=%s Where id=%s"
+            qry="UPDATE book SET publisher=%s Where id=%s"
             cursor.execute(qry,[Publisher,id])
             conn.commit()
         if Year!= yqry:
-            qry="UPDATE books SET year=%s Where id=%s"
+            qry="UPDATE book SET year=%s Where id=%s"
             cursor.execute(qry,[Year,id])
             conn.commit()
         if Description!= dqry:
-            qry="UPDATE books SET description=%s Where id=%s"
+            qry="UPDATE book SET description=%s Where id=%s"
             cursor.execute(qry,[Description,id])
             conn.commit()
         if Genre!= gqry:
-            qry="UPDATE books SET genre=%s Where id=%s"
+            qry="UPDATE book SET genre=%s Where id=%s"
             cursor.execute(qry,[Genre,id])
             conn.commit()
         if Quantity!= qqry:
-            qry="UPDATE books SET quantity=%s Where id=%s"
+            qry="UPDATE book SET quantity=%s Where id=%s"
             cursor.execute(qry,[Quantity,id])
             conn.commit()
         
-        qry='SELECT * FROM books WHERE id=%s'
+        qry='SELECT * FROM book WHERE id=%s'
         cursor.execute(qry,[id])
         data=cursor.fetchall()
         msg = 'The changes have been made'
@@ -430,12 +442,19 @@ def deletemusic(id):
         return redirect(url_for('music', value=data))
     return render_template('deletemusic.html', value=data)
 
-@app.route('/displaybooks/<id>')
-def displaybooks(id):
-        q1='Select * From books Where id = %s'
+
+@app.route('/displaybook/<id>')
+def displaybook(id):
+        q1='Select * From book Where id = %s'
         cursor.execute(q1,[id])
-        data = cursor.fetchall()   
-        return render_template('displaybooks.html',data=data)
+        data = cursor.fetchall()
+        q2='Select Image from book where id = %s'
+        cursor2.execute(q2,[id])
+        data2=cursor2.fetchall()
+        for x in data2:
+            L=x[0]
+            photo=b64encode(L).decode("utf-8")
+        return render_template('displaybook.html',photo=photo,data=data)
 
 @app.route('/displaymusic/<id>')
 def displaymusic(id):
@@ -484,17 +503,17 @@ def users():
     conn.close()
     return render_template('users.html',value=data)
 
-@app.route('/books/', methods=['GET',"POST"])
-def books():
+@app.route('/book/', methods=['GET',"POST"])
+def book():
     conn = MySQLdb.connect("localhost","root","anki@123janvi","pythonregister" )
     cursor = conn.cursor()
-    query = "SELECT * from books"
+    query = "SELECT * from book"
     cursor.execute(query)
     data = cursor.fetchall()
     conn.close()
-    return render_template('books.html',value=data)
-@app.route('/addbooks/', methods=['GET',"POST"])
-def addbooks():
+    return render_template('book.html',value=data)
+@app.route('/addbook/', methods=['GET',"POST"])
+def addbook():
     msg=''
     if request.method == "POST" and 'name' in request.form and 'genre' in request.form and 'author' in request.form and 'publisher' in request.form and 'year' in request.form and 'description' in request.form and 'quantity' in request.form:
        name = request.form['name']      
@@ -505,20 +524,20 @@ def addbooks():
        quantity=request.form['quantity']
        description = request.form['description']
        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-       cursor.execute('SELECT * FROM books WHERE name = %s and author = %s', [name,author])
+       cursor.execute('SELECT * FROM book WHERE name = %s and author = %s', [name,author])
        check=cursor.fetchone()
        if check:
            msg='This book has already been  added....'
            
        else:           
-           cursor.execute('SELECT MAX(id) From books')
+           cursor.execute('SELECT MAX(id) From book')
            r=cursor.fetchone()
            maxid=list(r.values())
-           cursor.execute('INSERT INTO books VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, author,publisher, year,description,genre,quantity])
+           cursor.execute('INSERT INTO book VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, author,publisher, year,description,genre,quantity])
            mysql.connection.commit()
-           return redirect(url_for('books'))
+           return redirect(url_for('book'))
     
-    return render_template('addbooks.html',msg=msg)
+    return render_template('addbook.html',msg=msg)
     
 @app.route('/music/', methods=['GET',"POST"])
 def music():
@@ -589,7 +608,7 @@ def addmovies():
            maxid=list(r.values())
            cursor.execute('INSERT INTO movie VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, director,year,description,genre,quantity])
            mysql.connection.commit()
-           return redirect(url_for('books'))
+           return redirect(url_for('book'))
     
     return render_template('addmovies.html',msg=msg)
     
@@ -637,8 +656,11 @@ def register():
             msg = 'This number is already in use. Please check again.'
        elif confirm!=password:
             msg = 'The passwords do not match ' 
-       else:         
-            cursor.execute('INSERT INTO users VALUES (NULL,%s, %s, %s,%s)', [username, password, email,number])
+       else:        
+            cursor.execute('SELECT MAX(uid) From users')
+            r=cursor.fetchone()
+            maxid=list(r.values())
+            cursor.execute('INSERT INTO users VALUES (%s,%s, %s, %s,%s)', [maxid[0]+1,username, password, email,number])
             mysql.connection.commit()
             cursor.execute('SELECT * FROM users WHERE username = %s AND password = %s',[username,password])
             login=cursor.fetchone()
