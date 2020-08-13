@@ -1,6 +1,4 @@
-﻿
-<!DOCTYPE html>
-
+﻿<!DOCTYPE html>
 <html>
 	<body>
 {% extends "layout.html" %}
@@ -22,10 +20,10 @@
 <table style="width:100%"> 
     <thead>
     <tr>
+        
         <th>ID</th>
         <th>Name</th>
-        <th>Musician/Band</th>
-        <th>Album</th>
+        <th>Director</th>
         <th>Year</th>
         <th>Genre</th>
         <th>Description</th>
@@ -37,29 +35,21 @@
     </tr>
     </thead>
     <tbody>
-    {% for row in value %} 
-     <tr>
-     
-         
+        {% for row in value %} 
+            <tr>
                 <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td> 
                 <td>{{row[2]}}</td>
                 <td>{{row[3]}}</td>
                 <td>{{row[4]}}</td>
-                <td>{{row[5]}}</td>
-                <td>{{row[6]}}</td>
-                <td>{{row[7]}}</td>
-                <td><img src="data:;base64,{{ List[loop.index0] }}"/></td>
-                <td> <a href="{{ url_for('editmusic', id=row[0]) }}"  > Edit </a></td>                 
-                <td><a href="{{ url_for('deletemusic', id=row[0]) }}"  > Delete </a></td>
+                <td>{{row[5]}}</td> 
+                <td>{{row[6]}}</td>   
+                <td><img src="data:;base64,{{ List[loop.index0] }}"/></td>            
+                <td> <a href="{{ url_for('editmovie', id=row[0]) }}"  > Edit </a></td> 
+                <td><a href="{{ url_for('deletemovie', id=row[0]) }}"  > Delete </a></td>
                 
-                
-         
-     </tr>
-     {% endfor %} 
-        
-           
-           
+            </tr>
+        {% endfor %}
         <button onclick="redirect()">Back to Admin</button>				
             <script>
             var redirect = function() {
@@ -71,8 +61,7 @@
     </tbody>
 
 </table>
-<a href="{{ url_for('addmusic') }}">ADD MUSIC</a>
-
+<a href="{{ url_for('addmovies')}}">ADD MOVIES</a>
 </body>
 </html>
 {% endblock %}
