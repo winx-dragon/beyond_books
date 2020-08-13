@@ -27,15 +27,17 @@
         <th>Year</th>
         <th>Genre</th>
         <th>Description</th>
-        <th>Quantity</th>
+        <th>Quantity</th>    
+        <th>Image</th   
         <th>           </th>
         <th>           </th>
         
     </tr>
     </thead>
     <tbody>
-        {% for row in value %} 
-            <tr>
+        <tr>
+            
+            {% for row in value %}             
                 <td>{{row[0]}}</td>
                 <td>{{row[1]}}</td> 
                 <td>{{row[2]}}</td>
@@ -44,6 +46,7 @@
                 <td>{{row[5]}}</td>
                 <td>{{row[6]}}</td>
                 <td>{{row[7]}}</td> 
+                <td><img src="data:;base64,{{ List[loop.index0] }}"/></td>               
                 <td><a href="{{ url_for('editbook', id=row[0]) }}"  > Edit </a></td> 
                 <td><a href="{{ url_for('deletebook', id=row[0]) }}"  > Delete </a></td>
                 
