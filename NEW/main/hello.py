@@ -151,21 +151,22 @@ def displaymusic(id):
 
 @app.route('/displaymovie/<id>',methods=['GET','POST'])
 def displaymovie(id):
-        '''if request.form.get('borrow'):
-    ID = createid('movie',id)
+    if request.method=="POST":
+        ID = createid('movie',id)
+        print(ID)
+        if request.form.get('borrow'):        
             print('yay')
             cursor.execute('UPDATE users SET Bmovie = %s Where username = %s', [ID,session['username']])
             cursor.execute('INSERT INTO fees(Item) Values (%s)',[ID])
             cursor.execute('Update movie SeT Quantity = Quantity - 1 Where id = %s',[id])
             conn.commit()
-        '''
-        print('yay')
-        ID = createid('movie',id)
-        cursor.execute('UPDATE users SET Bmovie = NULL Where username = %s',[session['username']])
-        cursor.execute('Delete from fees where Item = %s',[ID])
-        cursor.execute('Update movie SeT Quantity = Quantity + 1 Where id = %s',[id])
-        conn.commit()
-        return display('movie',id)
+        elif request.form.get('return'):
+            print('yay')        
+            cursor.execute('UPDATE users SET Bmovie = NULL Where username = %s',[session['username']])
+            cursor.execute('Delete from fees where Item = %s',[ID])
+            cursor.execute('Update movie SeT Quantity = Quantity + 1 Where id = %s',[id])
+            conn.commit()
+    return display('movie',id)
 
 @app.route('/logre/',methods=["GET","POST"])
 def logre():
