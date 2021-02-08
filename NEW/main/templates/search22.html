@@ -1,0 +1,53 @@
+﻿<!-- Search Bar -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/hom.css">
+    </head>
+    <body>
+    {% extends "layout.html" %}
+{% block content %}
+        <h1><center>Basic Search</center></h1>
+        <form  method="post" action="{{ url_for('search') }}" style="margin:auto;max-width:600px">
+            <input type="text" placeholder="Search" name="search">
+            <button type="submit"><i class="fa fa-search"></i>
+            </button>
+        </form>
+        <p></p>
+        <center>
+        
+        
+        <table>
+        <tbody>
+        {% for item in data1 %} 
+            <tr>                
+                <td><a href="{{ url_for('displaybook',id=item[0])}}" > Book: {{item[1]}} by {{item[2]}}</a></td>  
+                              
+            </tr>    
+     </tbody>   
+ {% endfor %}  
+ 
+ {% for item in data2 %} 
+            <tr>                
+                <td><a href="{{ url_for('displaymovie',id=item[0])}}" > Movie: {{item[1]}} by {{item[2]}}</a></td>                
+            </tr>    
+     </tbody>   
+ {% endfor %}  
+ 
+ {% for item in data3 %} 
+            <tr>                
+                <td><a href="{{ url_for('displaymusic',id=item[0])}}" > Music: {{item[1]}} by {{item[2]}}</a></td>                
+            </tr>    
+     </tbody>   
+ {% endfor %}  
+   
+ </table>
+
+        <div class="msg">{{ msg }}</div>
+        </center>
+    </body>
+</html>
+{% endblock %}

@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+
+{% for item in data %} 
+
+<form  action="{{url_for('displaybook', id=item[0])}}">  
+		<div class="displaybook">
+            <h1>{{item[1]}}</h1>           
+            <img src="data:;base64,{{ photo }}"/>           
+    			<p>Author: {{item[2]}}</p>
+				<p>Publisher: {{item[3]}}</p>
+				<p>Year Published: {{item[4]}}</p>
+				<p>Genre: {{item[5]}}</p>
+				<p>Description: {{item[6]}}</p>
+				<p>Quantity: {{item[7]}}</p>				
+			</form>  
+			
+			<button onclick="borrow()">Borrow</button>
+            <button onclick="return()">Return</button>
+            <script>
+            var borrow = function() {
+                 setTimeout(function(){ alert("You have borrowed the book successfully!!. To check for pending fees regarding the borrowed item please press the 'Check fees' button. ") });
+                 };
+        </script>			
+            
+         {% endfor %} 
+	     </div>
+{% endblock %}
+	</body>
+</html>

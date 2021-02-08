@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+ {% extends "layout.html" %}
+   {% block content %}
+<style>
+
+.dropbtn {
+    background-color: black;
+    color: white;
+    padding: 50px;
+    font-size: 20px;
+    border: none;
+}
+dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: lightgrey;
+    min-width: 40px;
+    z-index: 1;
+}
+.dropdown-content a {
+    color: black;
+    padding: 40px 40px;
+    text-decoration: none;
+    display: block;
+}
+.dropdown-content a:hover {background-color: white;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown:hover .dropbtn {background-color: grey;}
+</style>
+</head>
+<div class="dropdown">
+<button class="dropbtn">LOGIN\REGISTER</button>
+<div class="dropdown-content">
+<a href="{{ url_for('login')}}">LOGIN</a>
+<a href="{{ url_for('register')}}">REGISTER</a>
+<a href="{{ url_for('logout')}}">LOGOUT</a>
+<a href="{{ url_for('profile')}}">PROFILE</a>
+</div>
+</div>
+{% endblock %}
+</body>
+</html>
+
+

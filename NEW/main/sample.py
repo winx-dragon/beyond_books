@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request,session,flash
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
+import mysql.connector as sql
 import re
 import MySQLdb
 from base64 import b64encode
@@ -15,11 +14,42 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'anki@123janvi'
 app.config['MYSQL_DB'] = 'pythonregister'
 
-mysql=MySQL(app)
-mysql = MySQL()
-conn = MySQLdb.connect("localhost","root","anki@123janvi","pythonregister" )
+conn = sql.connect(host="localhost",user ="root",password="anki@123janvi",database="pythonregister" )
 cursor = conn.cursor()
 cursor2=conn.cursor()
+
+'''def convertToBinaryData(filename):
+    
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData
+
+def insertBLOB(img):
+    
+
+        query = (" INSERT INTO image VALUES (3,%s)")
+
+        Picture = convertToBinaryData(img)
+
+        cursor.execute(query,Picture)
+        conn.commit()
+
+insertBLOB("E:\Jahnavi\SCHOOL11\static\george.jpg")
+
+@app.route("/upload/", methods=["GET", "POST"])
+def upload_image():
+    if request.method == "POST":
+        if request.files:
+            image = request.files["image"].read()
+            convertToBinaryData(image)
+            
+
+            
+            
+            
+    return render_template("upload.html")
+    '''
+
 
 list1,list2,list3=[],[],[]
 list4,list5,list6=[],[],[]
@@ -44,7 +74,6 @@ def Image1(table,List):
             ph=b64encode(A).decode("utf-8")
             if ph not in List:
                 List.append(ph)  
-
 @app.route('/')
 def home():
     Image('book',list1)
@@ -55,6 +84,10 @@ def home():
 @app.route('/about/')
 def about():
     return render_template('about.html')
+
+@app.route('/fees/')
+def fees():
+    return render_template('fees.html')
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
@@ -91,10 +124,23 @@ def display(table,id):
         L=x[0]
         photo=b64encode(L).decode("utf-8")   
     return render_template('display'+table+'.html',photo=photo,data=data)
-    
-@app.route('/displaybook/<id>')
+
+def createid(table,id):
+    q1='Select Name from '+ table+ " WHere id = %s"
+    cursor.execute(q1,[id])
+    data = cursor.fetchone()
+    Idl =  list(data.values())
+    Idx = Idl[0].split()
+    ID = ''
+    for x in Idx:
+        ID += x[0]
+    ID = ID+'1'
+    return ID
+
+@app.route('/displaybook/<id>',methods=['GET', 'POST'])
 def displaybook(id):
     return display('book',id)
+ 
     
 @app.route('/displaymusic/<id>')
 def displaymusic(id):
@@ -102,7 +148,11 @@ def displaymusic(id):
 
 @app.route('/displaymovie/<id>')
 def displaymovie(id):
+    if request.method == "POST":
+        ID = createid('movie',id)
+        cursor.execute('INSERT INTO users.Bmovie VALUES (%s)', [ID])
     return display('movie',id)    
+
 @app.route('/logre/',methods=["GET","POST"])
 def logre():
     if 'loggedin' in session or 'adminloggedin' in session:
@@ -121,7 +171,7 @@ def register():
        confirm = request.form['confirm']
        email = request.form['email']
        number = request.form['number']
-       cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+       cursor = conn.cursor(MySQLdb.cursors.DictCursor)
        cursor.execute('SELECT * FROM users WHERE username = %s', [username])
        register = cursor.fetchone()
        cursor.execute('SELECT * FROM users WHERE number = %s', [number])
@@ -143,7 +193,7 @@ def register():
             r=cursor.fetchone()
             maxid=list(r.values())
             cursor.execute('INSERT INTO users VALUES (%s,%s, %s, %s,%s)', [maxid[0]+1,username, password, email,number])
-            mysql.connection.commit()
+            conn.commit()
             cursor.execute('SELECT * FROM users WHERE username = %s AND password = %s',[username,password])
             login=cursor.fetchone()
             if login:
@@ -170,7 +220,7 @@ def userlogin():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = sql.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM users WHERE username = %s AND password = %s', [username,password])
         login = cursor.fetchone()
        
@@ -194,7 +244,7 @@ def adminlogin():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password'] 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    
         cursor.execute('SELECT * FROM admin WHERE username = %s AND password = %s', [username,password])
         login = cursor.fetchone()
        
@@ -215,7 +265,7 @@ def adminlogin():
 @app.route('/profile/')
 def profile():
     if 'loggedin' in session:      
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+       
         cursor.execute('SELECT * FROM users WHERE uid = %s', [session['id']])
         account = cursor.fetchone()
        
@@ -269,7 +319,10 @@ def music():
 
 @app.route('/users/', methods=['GET'])
 def users():
-    return Table('users')
+    query = "SELECT * from users"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    return render_template('users.html',value=data)
 
 @app.route('/addbook/', methods=['GET',"POST"])
 def addbook():
@@ -282,7 +335,7 @@ def addbook():
        genre=request.form['genre']
        quantity=request.form['quantity']
        description = request.form['description']
-       cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+   
        cursor.execute('SELECT * FROM book WHERE name = %s and author = %s', [name,author])
        check=cursor.fetchone()
        if check:
@@ -293,7 +346,7 @@ def addbook():
            r=cursor.fetchone()
            maxid=list(r.values())
            cursor.execute('INSERT INTO book VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, author,publisher, year,description,genre,quantity])
-           mysql.connection.commit()
+           conn.commit()
            return redirect(url_for('book'))
     
     return render_template('addbook.html',msg=msg)
@@ -309,7 +362,7 @@ def addmusic():
        genre=request.form['genre']
        quantity=request.form['quantity']
        description = request.form['description']
-       cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+  
        cursor.execute('SELECT * FROM music WHERE name = %s and musicianband = %s and album = %s', [name,musicianband,album])
        check=cursor.fetchone()
        if check:
@@ -319,7 +372,7 @@ def addmusic():
            r=cursor.fetchone()
            maxid=list(r.values())
            cursor.execute('INSERT INTO music VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, musicianband,album, year,description,genre,quantity])
-           mysql.connection.commit()
+           conn.commit()
            return redirect(url_for('music'))
     
     return render_template('addmusic.html',msg=msg)
@@ -334,7 +387,6 @@ def addmovies():
        genre=request.form['genre']
        quantity=request.form['quantity']
        description = request.form['description']
-       cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
        cursor.execute('SELECT * FROM movie WHERE name = %s and director = %s', [name,director])
        check=cursor.fetchone()
        if check:
@@ -344,7 +396,7 @@ def addmovies():
            r=cursor.fetchone()
            maxid=list(r.values())
            cursor.execute('INSERT INTO movie VALUES(%s,%s, %s,%s,%s,%s,%s,%s)', [maxid[0]+1,name, director,year,description,genre,quantity])
-           mysql.connection.commit()
+           conn.commit()
            return redirect(url_for('book'))
     
     return render_template('addmovies.html',msg=msg)

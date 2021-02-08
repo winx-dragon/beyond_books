@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "dropdown.html" %}
+{% block content %}
+<div>
+    <p>Your account details are below:</p>
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td>{{ account['username'] }}</td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td>{{ account['password'] }}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ account['email'] }}</td>
+        </tr>
+        <tr>
+            <td>Contact Number:</td>
+            <td>{{ account['number'] }}</td>
+        </tr>
+    </table>
+     <button onclick="redirect()">Logout</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){ alert("Logout successfull"); 
+                     window.location.href = "http://localhost:5000/logout/";
+                     }, 5);
+                 };
+        </script>
+</div>
+{% endblock %}
+</body>
+</html>

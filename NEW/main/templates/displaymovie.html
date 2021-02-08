@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+    {% for row in data %} 
+		<div class="displaymovie">
+            
+            <h1>{{row[1]}}</h1>
+            <form  action="{{url_for('displaymovie', id=row[0])}}">  
+    				<img src="data:;base64,{{ photo }}"/>
+    				<p>Director: {{row[2]}}</p>				
+    				<p>Year Published: {{row[3]}}</p>
+    				<p>Genre: {{row[4]}}</p>
+    				<p>Description: {{row[5]}}</p>
+    				<p>Quantity: {{row[6]}}</p>
+				
+            <form  action="{{url_for('displaymovie', id=row[0])}}"  method="POST">  
+			<button name="borrow" value="borrow" type="submit" onclick="borrow()">Borrow</button>
+			<button name="return" value= "return" type="submit" onclick="return()">Return</button>
+			
+			</form>
+			</form>
+            
+        <script>
+            var borrow = function() {
+                 setTimeout(function(){ alert("You have borrowed the movie successfully!! ")});
+                 };
+                 
+            var return = function() {
+                 setTimeout(function(){ alert("You have returned the movie successfully!!")});
+                 };
+        </script>	
+    {% endfor %}        
+            
+	     </div>
+{% endblock %}
+	</body>
+</html>

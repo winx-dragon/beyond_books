@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html>
+	<body>
+{% extends "layout.html" %}
+{% block content %}
+
+ 
+
+<form  action="{{url_for('displaybook', id = 1)}}">  
+		<div class="displaybook">
+       
+        <img src="data:;base64,{{ ph }}"/>
+
+				
+			</form>     
+        
+	     </div>
+{% endblock %}
+	</body>
+</html>

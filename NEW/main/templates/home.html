@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+  <body>
+   {% extends "layout.html" %}
+   {% block content %}
+   {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {% endwith %}
+				
+       <div class="home">
+          <h1>Find what you seek</h1>
+            <p>This website allows our users to borrow new and old books, music and movies form our varied collection. 
+            Enjoy.</p>
+            
+            
+            
+        <div class="display">
+            <h1>Literary Collection:</h1>
+           
+           
+           {% for item in list1 %} 
+           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+
+
+            {% endfor %} 
+
+            <h1>Film collection:</h1>
+            
+            {% for item in list2 %} 
+           <a href="{{ url_for('displaymovie', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+
+
+            {% endfor %} 
+            
+            <h1>Music collection:</h1>
+            
+            {% for item in list3 %} 
+           <a href="{{ url_for('displaymusic', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+
+
+            {% endfor %} 
+        
+            
+            
+        
+
+       </div>
+   {% endblock %}
+   
+   
+  </body>
+</html>

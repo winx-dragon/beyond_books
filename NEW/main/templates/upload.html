@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+  <body>
+   {% extends "layout.html" %}}
+
+{% block content %}
+
+      <h1>Upload an image</h1>
+      <hr>
+
+      <form action="/upload/" method="POST" enctype="multipart/form-data">
+
+        <div class="form-group">
+          <label>Select image</label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" name="image" id="image">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload</button>
+
+      </form>
+
+
+{% endblock %}
+</body>
+</html>

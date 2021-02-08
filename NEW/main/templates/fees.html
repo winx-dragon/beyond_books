@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/hom.css">
+    </head>
+    <body>
+    {% extends "layout.html" %}
+{% block content %}
+        <h1><center>CHECK FEES</center></h1>
+        <form  method="post" action="{{ url_for('fees') }}" style="margin:auto;max-width:600px">
+            <p>Enter the id of the borrowed item</p><input type="text" placeholder="ID" name="id">
+            <p>Enter the number of days the item has been in you possession: </p> <input type="text" placeholder="days" name="days">
+            <button> SUBMIT </button>
+        </form>
+    </body>
+</html>
+{% endblock %}
