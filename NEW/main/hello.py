@@ -131,41 +131,50 @@ def display(table,id):
 def createid(table,id):
     q1='Select Name from '+ table+ " WHere id = %s"
     cursor.execute(q1,[id])
-    data = cursor.fetchone()
-    Idl =  list(data)
-    Idx = Idl[0].split()
+    data = cursor.fetchone()   
+    Idx = data[0].split()
     ID = ''
     for x in Idx:
         ID += x[0]
-    ID = ID+'1'
+    x = ID + '%'
+    
+    q2='Select Item from fees where Item Like %s  Order by id Desc Limit 1'
+    cursor.execute(q2,[x])
+    D=cursor.fetchone()
+    if D==None:
+        dx='1'
+    else:        
+        dx=str(int(D[0][1])+1)
+    ID = ID+dx
     return ID
 
 @app.route('/displaybook/<id>',methods=['GET', 'POST'])
 def displaybook(id):
     return display('book',id)
  
-    
+
 @app.route('/displaymusic/<id>')
 def displaymusic(id):
     return display('music',id)
 
 @app.route('/displaymovie/<id>',methods=['GET','POST'])
-def displaymovie(id):
-    if request.method=="POST":
-        ID = createid('movie',id)
-        print(ID)
-        if request.form.get('borrow'):        
-            print('yay')
-            cursor.execute('UPDATE users SET Bmovie = %s Where username = %s', [ID,session['username']])
-            cursor.execute('INSERT INTO fees(Item) Values (%s)',[ID])
-            cursor.execute('Update movie SeT Quantity = Quantity - 1 Where id = %s',[id])
-            conn.commit()
-        elif request.form.get('return'):
-            print('yay')        
-            cursor.execute('UPDATE users SET Bmovie = NULL Where username = %s',[session['username']])
-            cursor.execute('Delete from fees where Item = %s',[ID])
-            cursor.execute('Update movie SeT Quantity = Quantity + 1 Where id = %s',[id])
-            conn.commit()
+def displaymovie(id):    
+    if "loggedin" not in session:
+        flash("Please login to borrow the item.")     
+    else:  
+        q3='Select Bbook,Bmovie,Bmusic from users where username = %s and Bbook is NULL and Bmovie is NULL and Bmusic is NULL'
+        cursor.execute(q3,[session['username']])
+        Data=cursor.fetchall()
+        if Data!=((None, None, None),):
+            flash('You have already borrowed an item for this week. You can return the borrowed item or borrow the current item the next week. ')
+        else:
+            ID = createid('movie',id)
+            if request.method == 'POST':      
+                cursor.execute('UPDATE users SET Bmovie = %s Where username = %s', [ID,session['username']])
+                cursor.execute('INSERT INTO fees(Item) Values (%s)',[ID])
+                cursor.execute('Update movie SeT Quantity = Quantity - 1 Where id = %s',[id])
+                conn.commit()
+                flash("The book has been borrowed. To return the book, please visit the Return page.")             
     return display('movie',id)
 
 @app.route('/logre/',methods=["GET","POST"])
