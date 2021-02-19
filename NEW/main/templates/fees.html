@@ -9,6 +9,7 @@
         <h1><center>CHECK FEES</center></h1>
         <form  method="post" action="{{ url_for('fees') }}" style="margin:auto;max-width:600px">
             <p>Enter the id of the borrowed item</p><input type="text" placeholder="ID" name="id">
+            <p>Enter the date you borrowed item</p><input type="text" placeholder="date" name="date">
             <p>Enter the number of days the item has been in you possession: </p> <input type="text" placeholder="days" name="days">
             <button> SUBMIT </button>
         </form>

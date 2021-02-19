@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1> Welcome {{session.uid}} </h1>
+
+  <hr>
+
+  <h4>Your pending fine is {{fine.fine}}</h4>
+
+  <hr>
+
+  <br>
+
+  <table class="table table-hover table-stripped">
+    <thead class="thead-dark">
+    <tr>
+      <th>Book ID/th>
+      <th>Date Borrowed</th>
+      <th>Date to Return</th>
+      <!-- <th></th>
+      <th></th> -->
+    </tr>
+
+    {% for transaction in transactions %}
+      <tr>
+        <td>{{users.Bbook}}</td>
+        <td>{{users.Date Borrowed}}</td>
+        <td>{{users.Date To Return}}</td>
+        
+      </tr>
+    {% endfor %}
+
+  </table>
+
+{% endblock %}
+
+

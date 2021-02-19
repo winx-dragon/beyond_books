@@ -4,7 +4,9 @@ import MySQLdb.cursors
 import re
 import MySQLdb
 from base64 import b64encode
-
+import datetime
+import time
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -299,6 +301,29 @@ def profile():
     else:
         flash('Not logged in.')
     return redirect(url_for('home'))
+
+'''# Profile
+@app.route('/profile/')
+def student_detail():
+  if 'loggedin' in session: 
+    # Create Cursor
+    cur = mysql.connection.cursor()
+
+    # Execute
+    result = cur.execute("SELECT * FROM users WHERE uid = %s", (session['uid'], )) 
+
+    users = cur.fetchall()
+    cur.execute("select fine from users where uid like %s",(session['uid'], ))
+    fine=cur.fetchone()
+    print fine
+    if result > 0:
+        return render_template('profile.html', users = users,fine=fine)
+    else:
+        msg = 'No recorded transactions'
+        return render_template('profile.html', msg= msg)
+
+    # Close connection
+    cur.close()'''
 
 
 @app.route('/logout/', methods = ['GET','POST'])
@@ -645,6 +670,155 @@ def editmusic(id):
         return render_template('editmusic.html',value=data,msg=msg)
     msg='No changes are detected.'    
     return render_template('editmusic.html',value=data,msg=msg)
+
+'''# Return books
+class ReturnForm(Form):
+    book_name = StringField("Name of the book to be returned")
+    users = StringField(
+        "Student ID number", [validators.Length(min=1)])
+
+
+@app.route('/return_books', methods=['GET', 'POST'])
+@is_logged_in
+def return_books():
+    cur_start = mysql.connection.cursor()
+    result = cur_start.execute(
+        "select bookName from books where available = 0 group by bookName")
+    books = cur_start.fetchall()
+    form = ReturnForm(request.form)
+    if result > 0:
+
+        if request.method == 'POST' and form.validate():
+            student_id = form.studentUsername.data
+            book_name = form.book_name.data
+
+            cur = mysql.connection.cursor()
+            result = cur.execute("select book_id from transactions where studentUsername= "+str(
+                student_id)+" and bookName= '"+str(book_name)+"' ")
+            data = cur.fetchone()
+            if result > 0:
+                book_id = data['book_id']
+
+                cur.execute(
+                    "update books set available = 1 where book_id = "+str(book_id)+" ")
+
+                mysql.connection.commit()
+                cur.execute("update transactions set Done = 1  where book_id = " +
+                            str(book_id)+" and studentUsername= "+str(student_id)+" ")
+
+                mysql.connection.commit()
+
+                cur.execute("select returnDate from transactions where studentUsername = " +
+                            str(student_id)+" and book_id= "+str(book_id)+" ")
+                data = cur.fetchone()
+
+                returndate = str(data['returnDate'])
+                current_time = time.strftime(
+                    r"%Y-%m-%d %H:%M:%S", time.localtime())
+
+                if current_time > returndate:
+                    returndate = time.strftime(returndate)
+
+                    datetimeFormat = '%Y-%m-%d %H:%M:%S'
+                    diff = datetime.datetime.strptime(current_time, datetimeFormat)\
+            - datetime.datetime.strptime(returndate, datetimeFormat)
+                    amount_to_be_added_to_fine = (diff.days)*5
+
+                    cur.execute("update transactions set fine=fine+ "+str(
+                        amount_to_be_added_to_fine)+" studentUsername= "+str(student_id)+"  ")
+                    mysql.connection.commit()
+
+                else:
+                    returndate = time.strftime(returndate)
+                    datetimeFormat = '%Y-%m-%d %H:%M:%S'
+                    diff = datetime.datetime.strptime(current_time, datetimeFormat)\
+            - datetime.datetime.strptime(returndate, datetimeFormat)
+                    # should be negative
+                    print(diff.days)
+                flash('Book Returned', 'success')
+                return redirect(url_for('bookslist'))
+
+            else:
+                flash('Book already returned', 'success')
+                return redirect(url_for('bookslist'))
+            cur.close()
+
+    else:
+        flash('No books found', 'success')
+
+    return render_template('return_books.html', form=form, books=books)
+
+# Check fine form
+
+
+class GetUsernameForm(Form):
+    studentUsername = StringField(
+        "Student ID number", [validators.Length(min=1)])
+    amountpaid = StringField("Student ID number")
+
+
+@app.route('/check_fine', methods=['GET', 'POST'])
+@is_logged_in
+def check_fine():
+    cur = mysql.connection.cursor()
+
+    # Execute
+    result = cur.execute(
+        "SELECT studentUsername, fine  FROM transactions where fine > 0 GROUP BY studentusername,fine")
+
+    books = cur.fetchall()
+
+    if result > 0:
+        return render_template('check_fine.html', books=books)
+    else:
+        msg = 'No outstanding fines'
+        return render_template('check_fine.html', msg=msg)
+
+    # Close connection
+    cur.close()
+
+# Pay Fine
+
+
+@app.route('/pay_fine', methods=['GET', 'POST'])
+@is_logged_in
+def pay_fine():
+    form = GetUsernameForm(request.form)
+    data = 0
+    newfine = 0
+
+    if request.method == 'POST' and form.validate():
+        student_id = form.studentUsername.data
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "select fine from transactions where studentUsername="+str(student_id)+"  ")
+        data = cur.fetchone()
+        amountpaid = form.amountpaid.data
+        if amountpaid and int(data['fine']) > 0:
+
+            originalfine = int(data['fine'])
+            newfine = 0
+            newfine = originalfine-int(amountpaid)
+            print(newfine)
+            cur.execute("update transactions set fine="+str(newfine) +
+                        " where studentUsername="+str(student_id)+" ")
+
+            mysql.connection.commit()
+
+            flash('Amount was paid', 'success')
+
+    return render_template('pay_fine.html', form=form, data=data, newfine=newfine)
+
+
+@app.route('/analyse', methods=['GET', 'POST'])
+@is_logged_in
+def analyse():
+    cur = mysql.connection.cursor()
+    cur.execute("select studentUsername,count(*) as num from transactions group by studentUsername,fine order by fine  desc, num desc limit 5")
+    data = cur.fetchall()
+    print data
+    mysql.connection.commit()
+    return render_template('analyse.html', data=data)'''
 		 
 if __name__ == '__main__':
     app.run()
