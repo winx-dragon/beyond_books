@@ -775,50 +775,7 @@ def check_fine():
         return render_template('check_fine.html', msg=msg)
 
     # Close connection
-    cur.close()
-
-# Pay Fine
-
-
-@app.route('/pay_fine', methods=['GET', 'POST'])
-@is_logged_in
-def pay_fine():
-    form = GetUsernameForm(request.form)
-    data = 0
-    newfine = 0
-
-    if request.method == 'POST' and form.validate():
-        student_id = form.studentUsername.data
-        cur = mysql.connection.cursor()
-        cur.execute(
-            "select fine from transactions where studentUsername="+str(student_id)+"  ")
-        data = cur.fetchone()
-        amountpaid = form.amountpaid.data
-        if amountpaid and int(data['fine']) > 0:
-
-            originalfine = int(data['fine'])
-            newfine = 0
-            newfine = originalfine-int(amountpaid)
-            print(newfine)
-            cur.execute("update transactions set fine="+str(newfine) +
-                        " where studentUsername="+str(student_id)+" ")
-
-            mysql.connection.commit()
-
-            flash('Amount was paid', 'success')
-
-    return render_template('pay_fine.html', form=form, data=data, newfine=newfine)
-
-
-@app.route('/analyse', methods=['GET', 'POST'])
-@is_logged_in
-def analyse():
-    cur = mysql.connection.cursor()
-    cur.execute("select studentUsername,count(*) as num from transactions group by studentUsername,fine order by fine  desc, num desc limit 5")
-    data = cur.fetchall()
-    print data
-    mysql.connection.commit()
-    return render_template('analyse.html', data=data)'''
+    cur.close()'''
 		 
 if __name__ == '__main__':
     app.run()
