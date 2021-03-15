@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+    <body>
+    {% extends "layout.html" %}
+{% block content %}
+        <h1><center>Return Item</center></h1>
+{% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {% endwith %}
+            {% for item in ID %}
+        <form  method="post" action="{{ url_for('Return', id=item[0])  }}">
+            <p> id of the borrowed item:{{ item[0] }} </p> 
+                {% endfor %}
+            <p>Enter the type of item:
+            (book/movie/music)</p><input type="text" placeholder="Type of item" name="type" id="type" required >            
+            <p>Enter the username: </p><input type="text" name="username" placeholder="Username" id="username" required>
+    	    <p>Enter the password: </p><input type="password" name="password" placeholder="Password" id="password" required>
+	        
+            <button> SUBMIT </button>
+        </form>
+     
+    </body>
+</html>
+{% endblock %}

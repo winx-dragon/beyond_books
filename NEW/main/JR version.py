@@ -4,7 +4,7 @@ import MySQLdb.cursors
 import re
 import MySQLdb
 from base64 import b64encode
-from datetime import date,timedelta
+import datetime
 
 app = Flask(__name__)
 
@@ -46,7 +46,6 @@ def Image(table,List):
     qry = 'SELECT Image FROM '+table
     cursor.execute(qry)    
     data = cursor.fetchall()
-    print(data)
     ct=1
     for x in data:     
         cursor.execute('Select Name from '+table+' where id=%s',[ct])
@@ -59,7 +58,7 @@ def Image(table,List):
                 List.append([ph,ct,name])
                 ct+=1
         else:
-            print(x)
+            
             ph=''
             if [ph,ct,name] not in List:       
                 List.append(['',ct,name])
@@ -88,24 +87,45 @@ def home():
 def about():
     return render_template('about.html')
 
-@app.route('/fees/')
-def fees():
-    return render_template('fees.html')
+@app.route('/fees/<id>',methods=['GET','POST'])
+def fees(id):
+    tdate = datetime.date.today()    
+    cursor.execute('select Rdate from fees where Item = %s',[id])
+    rdate=cursor.fetchone()
+    rdate=rdate[0]
+    diff=tdate-rdate
+    s=diff.days
+    amt = 0
+    if s == 0 or s<0:
+        amt = 0
+        flash('No amount to pay, please return the book.')
+    else:
+        amt = 5*s
+    cursor.execute("update fees set Amount=%s where Item = %s",[amt,id])
+    conn.commit()
+    query = "SELECT * from fees where Item = %s"
+    cursor.execute(query,[id])
+    data = cursor.fetchall() 
+    return render_template('fees.html',data=data)
 
-@app.route('/Return/', methods=['GET','POST'])
-def Return():
+@app.route('/Return/<id>', methods=['GET','POST'])
+def Return(id):
+    ID =[[id]]
+    print(ID)
     if "loggedin" not in session:
         flash("Please login to return the item.")
     else:
-        if 'type' in request.form and 'username' in request.form and 'password' in request.form and 'item' in request.form and request.method=="POST":
+        if 'type' in request.form and 'username' in request.form and 'password' in request.form and request.method=="POST":
             username = request.form['username']
             password = request.form['password']
             Type = request.form['type']
-            cursor.execute('SELECT username,Bbook,Bmusic,Bmovie FROM users WHERE username = %s and password = %s', [username,password])
+            cursor.execute('SELECT username,B'+Type+" FROM users WHERE username = %s and password = %s", [username,password])
             Data=cursor.fetchall()
+            print(Data)
             if Data:
-                ID = request.form['item'] 
+                ID = ID[0][0]
                 a=str(ID[0]) + '%'
+                print(a)
                 for i in Data:
                     for x in i:
                         if ID==x:                            
@@ -120,7 +140,7 @@ def Return():
             else:
                 flash('Please re-enter your credentials. The username or password is incorrect.')
 
-    return render_template('Return.html')
+    return render_template('Return.html',ID = ID)
 
 @app.route('/search/', methods=['GET', 'POST'])
 def search():
@@ -147,12 +167,15 @@ def search():
     return render_template('search22.html',msg=msg)
     
 def display(table,id):
+    global ID
     q1='Select * From '+ table+ " Where id = %s"
     cursor.execute(q1,[id])
-    data = cursor.fetchall()
+    data = list(cursor.fetchall()[0])
+    data.append(ID)
     q2='Select Image from '+ table+ ' where id = %s'
     cursor2.execute(q2,[id])
     data2=cursor2.fetchall()
+    data = [data]
     for x in data2:
         if x[0]==None:
             photo=''
@@ -161,45 +184,63 @@ def display(table,id):
             photo=b64encode(L).decode("utf-8") 
     return render_template('display'+table+'.html',photo=photo,data=data)
 
+
+
 def createid(table,id):
+    ID = ''
     q1='Select Name from '+ table+ " WHere id = %s"
     cursor.execute(q1,[id])
     data = cursor.fetchone()   
     Idx = data[0].split()
-    ID = ''
     for x in Idx:
         ID += x[0]
     x = ID + '%'
-
     q2='Select Item from fees where Item Like %s  Order by id Desc Limit 1'
     cursor.execute(q2,[x])
-    D=cursor.fetchone()
-    D=D[0]
-    n=D[len(D)-1]
-    print(n)
+    D=cursor.fetchone()   
     if D==None:
         dx='1'
     else:        
+        D=D[0]
+        n=D[len(D)-1]
         dx=str(int(n)+1)
     ID = ID+dx
     return ID
 
+
+
+def Name(ID):
+
+    n = ''
+    for i in ID[:-1]:
+        n = n + i + '%'
+    return n
+
+ID = ' '
 def borrow(table,id):
+    global ID
     if "loggedin" not in session:
         flash("Please login to borrow the item.")     
     else:  
-        q3='Select Bbook,Bmovie,Bmusic from users where username = %s and Bbook is NULL and Bmovie is NULL and Bmusic is NULL'
-        cursor.execute(q3,[session['username']])
-        bdate= date.today()
-        rdate = bdate + timedelta(7)
+        q3='Select Bbook,Bmovie,Bmusic from users where username = %s'
+        cursor.execute(q3,[session['username']])      
         Data=cursor.fetchall()
         if Data!=((None, None, None),):
             flash('You have already borrowed an item for this week. You can return the borrowed item or borrow the current item the next week. ')
+            for i in Data[0]:
+                if i!=None:
+                    ID=i
         else:
+            bdate= datetime.date.today()
+            rdate = bdate + datetime.timedelta(7)
             ID = createid(table,id)
+            name = Name(ID)
+            cursor.execute('select Name from '+table+' where Name LIKE %s',[name])
+            d = cursor.fetchone()
+            name = d[0]
             if request.method == 'POST':      
                 cursor.execute('UPDATE users SET B'+table+' = %s Where username = %s', [ID,session['username']])
-                cursor.execute('INSERT INTO fees(Item, Date Borrrowed, Date To Return) Values (%s,%s,%s)',[ID,bdate,rdate])
+                cursor.execute('INSERT INTO fees(Item,ItemName, Bdate, Rdate) Values (%s,%s,%s,%s)',[ID,name,bdate,rdate])
                 cursor.execute('Update '+table+' movie SeT Quantity = Quantity - 1 Where id = %s',[id])
                 conn.commit()
                 m="The item has been borrowed. Please note down the Item ID = " + ID

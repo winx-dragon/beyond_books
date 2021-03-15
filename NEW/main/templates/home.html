@@ -26,7 +26,7 @@
            
            
            {% for item in list1 %} 
-           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+           <a href="{{ url_for('displaybook', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" alt="{{ item[2] }}"/></a>
 
 
             {% endfor %} 
@@ -34,7 +34,7 @@
             <h1>Film collection:</h1>
             
             {% for item in list2 %} 
-           <a href="{{ url_for('displaymovie', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+           <a href="{{ url_for('displaymovie', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" alt="{{ item[2] }}"/></a>
 
 
             {% endfor %} 
@@ -42,7 +42,7 @@
             <h1>Music collection:</h1>
             
             {% for item in list3 %} 
-           <a href="{{ url_for('displaymusic', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}"/></a>
+           <a href="{{ url_for('displaymusic', id=item[1]) }}"><img src="data:;base64,{{ item[0] }}" alt="{{ item[2] }}"/></a>
 
 
             {% endfor %} 
@@ -57,3 +57,26 @@
    
   </body>
 </html>
+
+
+qry = 'SELECT Image FROM '+table
+    cursor.execute(qry)    
+    data = cursor.fetchall()
+    print(data)
+    ct=1
+    for x in data:      
+        if x!= (None,):
+            A=x[0]
+            print(A)
+            ph=b64encode(A).decode("utf-8")
+            if [ph,ct] not in List:
+                List.append([ph,ct])
+                ct+=1
+        elif x==(None,):
+            if ['',ct] not in List:       
+                List.append(['',ct])
+                ct+=1
+        cursor.execute('Select Name from '+table)
+        data2=cursor.fetchall()
+        name = data2[0]
+        List[ph,ct].append(name)

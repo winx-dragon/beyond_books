@@ -18,15 +18,23 @@
             
             <h1>{{row[1]}}</h1>
             <form  action="{{url_for('displaymovie', id=row[0])}}" method="POST">  
-    				<img src="data:;base64,{{ photo }}"/>
+    				<img src="data:;base64,{{ photo }}" alt=" Image not available"/>
     				<p>Director: {{row[2]}}</p>				
     				<p>Year Published: {{row[3]}}</p>
     				<p>Genre: {{row[4]}}</p>
     				<p>Description: {{row[5]}}</p>
     				<p>Quantity: {{row[6]}}</p>
 				
-            <div class="msg">{{ msg }}</div>
+
 			<button type="submit" >Borrow</button> 
+			<button onclick="redirect()">Check Fine</button>				
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){
+                     window.location.href = "{{ url_for('fees', id = item[] ) }}";
+                     }, 5);
+                 };
+        </script>
 			
 			</form>
                      

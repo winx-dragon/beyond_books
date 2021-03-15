@@ -3,29 +3,43 @@
 	<body>
 {% extends "layout.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {% endwith %}
+
 
 {% for item in data %} 
 
-<form  action="{{url_for('displaybook', id=item[0])}}">  
+<form  action="{{url_for('displaybook', id=item[0])}}" method="POST">  
 		<div class="displaybook">
             <h1>{{item[1]}}</h1>           
-            <img src="data:;base64,{{ photo }}"/>           
+            <img src="data:;base64,{{ photo }}" alt=" Image not available "/>           
     			<p>Author: {{item[2]}}</p>
 				<p>Publisher: {{item[3]}}</p>
 				<p>Year Published: {{item[4]}}</p>
 				<p>Genre: {{item[5]}}</p>
 				<p>Description: {{item[6]}}</p>
 				<p>Quantity: {{item[7]}}</p>				
+			
+			<button type="submit" >Borrow</button> 
+			<button onclick="Fun()">Check Fine</button>
+			<script>
+            var Fun = function() {
+                 setTimeout(function(){ 
+                     window.location.href ="{{url_for('fees', id=item[9])}}";
+                     }, 5);
+                 };
+        </script>
 			</form>  
 			
-			<button onclick="borrow()">Borrow</button>
-            <button onclick="return()">Return</button>
-            <script>
-            var borrow = function() {
-                 setTimeout(function(){ alert("You have borrowed the book successfully!!. To check for pending fees regarding the borrowed item please press the 'Check fees' button. ") });
-                 };
-        </script>			
-            
+			
          {% endfor %} 
 	     </div>
 {% endblock %}

@@ -1,18 +1,37 @@
 ﻿<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="/static/hom.css">
-    </head>
+
     <body>
     {% extends "layout.html" %}
 {% block content %}
+{% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        
+                        {% endfor %}
+                        </ul>
+                      {% endif %}
+                {% endwith %}
+{% for item in data %} 
         <h1><center>CHECK FEES</center></h1>
-        <form  method="post" action="{{ url_for('fees') }}" style="margin:auto;max-width:600px">
-            <p>Enter the id of the borrowed item</p><input type="text" placeholder="ID" name="id">
-            <p>Enter the date you borrowed item</p><input type="text" placeholder="date" name="date">
-            <p>Enter the number of days the item has been in you possession: </p> <input type="text" placeholder="days" name="days">
-            <button> SUBMIT </button>
+        <form  method="post" action="{{ url_for('fees', id = item[1]) }}" style="margin:auto;max-width:600px">
+            <p>Id of the borrowed item:  {{ item[1] }}</p> 
+            <p>Name of the Item: {{item[2]}}       </p>      
+            <p>Date of borrowing: {{item[3]}}</p> 
+            <p>Date to return:  {{item[4]}}</p> 
+            <p>Amount: {{item[5]}}</p> 
+            <button onclick=redirect()> RETURN </button>
+            <script>
+            var redirect = function() {
+                 setTimeout(function(){
+                     window.location.href = "{{ url_for('Return', id = item[1] ) }}";
+                     }, 5);
+                 };
+        </script>
         </form>
+ {% endfor %}       
     </body>
 </html>
 {% endblock %}

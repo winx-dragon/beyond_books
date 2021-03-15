@@ -44,7 +44,7 @@
                 <td>{{row[4]}}</td>
                 <td>{{row[5]}}</td> 
                 <td>{{row[6]}}</td>   
-                <td><img src="data:;base64,{{ List[loop.index0] }}"/></td>            
+                <td><img src="data:;base64,{{ List[loop.index0] }}" alt="Image not added"/></td>            
                 <td> <a href="{{ url_for('editmovie', id=row[0]) }}"  > Edit </a></td> 
                 <td><a href="{{ url_for('deletemovie', id=row[0]) }}"  > Delete </a></td>
                 
